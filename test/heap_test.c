@@ -59,6 +59,3 @@ TEST(heap_pop_works, Heap_fixture) {
 }
 
 #pragma TEST_END
-
-int main() {}
-
