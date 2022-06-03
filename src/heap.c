@@ -76,7 +76,7 @@ static void heap_heapify_down(struct heap *heap) {
     while (heap_has_left_child(heap, index)) {
         int smaller_child_index;
         int right_child_index = heap_index_of_right_child(index);
-        int left_child_index = heap_index_of_right_child(index);
+        int left_child_index = heap_index_of_left_child(index);
         if (heap->items[left_child_index] < heap->items[right_child_index]) {
             smaller_child_index = left_child_index;
         } else {

@@ -53,6 +53,9 @@ TEST(heap_pop_works, Heap_fixture) {
     heap_push(&T_ heap, 2);
     heap_push(&T_ heap, 1);
     ASSERT_EQ(heap_pop(&T_ heap), 1, "%d");
+    ASSERT_EQ(heap_pop(&T_ heap), 2, "%d");
+    ASSERT_EQ(heap_pop(&T_ heap), 3, "%d");
+    ASSERT_EQ(heap_pop(&T_ heap), 10, "%d");
 }
 
 #pragma TEST_END
