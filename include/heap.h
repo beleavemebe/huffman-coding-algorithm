@@ -12,14 +12,14 @@
 struct heap {
     int size;
     int capacity;
-    int *items;
+    struct node *nodes;
 };
 
 
 struct heap heap_create();
 void heap_destroy(struct heap* heap);
 bool heap_is_empty(struct heap *heap);
-int heap_pop(struct heap *heap);
-void heap_push(struct heap* heap, int item);
+struct node heap_pop(struct heap *heap);
+void heap_push(struct heap* heap, struct node* node);
 
 #endif //HUFFMAN_HEAP_H

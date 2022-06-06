@@ -6,19 +6,20 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "..\include\heap.h"
+#include "..\include\node.h"
 
 struct heap heap_create() {
-    int *array = calloc(HEAP_INITIAL_CAPACITY, sizeof(int));
+    struct node *items = calloc(HEAP_INITIAL_CAPACITY, sizeof(struct node));
     return (struct heap) {
         .size = 0,
         .capacity = HEAP_INITIAL_CAPACITY,
-        .items = array
+        .nodes = items
     };
 }
 
 void heap_destroy(struct heap* heap) {
-    free(heap->items);
-    heap->items = NULL;
+    free(heap->nodes);
+    heap->nodes = NULL;
 }
 
 static int heap_index_of_left_child(int index) {
@@ -33,16 +34,16 @@ static int heap_index_of_parent(int index) {
     return (index - 1) / 2;
 }
 
-static int heap_left_child(struct heap *heap, int index) {
-    return heap->items[heap_index_of_left_child(index)];
+static struct node *heap_left_child(struct heap *heap, int index) {
+    return &heap->nodes[heap_index_of_left_child(index)];
 }
 
-static int heap_right_child(struct heap *heap, int index) {
-    return heap->items[heap_index_of_right_child(index)];
+static struct node *heap_right_child(struct heap *heap, int index) {
+    return &heap->nodes[heap_index_of_right_child(index)];
 }
 
-static int heap_parent(struct heap *heap, int index) {
-    return heap->items[heap_index_of_parent(index)];
+static struct node *heap_parent(struct heap *heap, int index) {
+    return &heap->nodes[heap_index_of_parent(index)];
 }
 
 static bool heap_has_left_child(struct heap *heap, int index) {
@@ -58,15 +59,15 @@ static bool heap_has_parent(struct heap *heap, int index) {
 }
 
 static void heap_swap(struct heap *heap, int i, int j) {
-    int temp = heap->items[i];
-    heap->items[i] = heap->items[j];
-    heap->items[j] = temp;
+    struct node temp = heap->nodes[i];
+    heap->nodes[i] = heap->nodes[j];
+    heap->nodes[j] = temp;
 }
 
 static void heap_ensure_capacity(struct heap *heap) {
     if (heap->size == heap->capacity) {
         int new_capacity = heap->capacity * HEAP_CAPACITY_MULTIPLIER;
-        heap->items = (int *) realloc(heap->items, new_capacity * sizeof(int));
+        heap->nodes = (struct node *) realloc(heap->nodes, new_capacity * sizeof(struct node));
         heap->capacity = new_capacity;
     }
 }
@@ -77,13 +78,13 @@ static void heap_heapify_down(struct heap *heap) {
         int smaller_child_index;
         int right_child_index = heap_index_of_right_child(index);
         int left_child_index = heap_index_of_left_child(index);
-        if (heap->items[left_child_index] < heap->items[right_child_index]) {
+        if (node_compare(&heap->nodes[left_child_index], &heap->nodes[right_child_index]) < 0) {
             smaller_child_index = left_child_index;
         } else {
             smaller_child_index = right_child_index;
         }
 
-        if (heap->items[index] < heap->items[smaller_child_index]) {
+        if (node_compare(&heap->nodes[index], &heap->nodes[smaller_child_index]) < 0) {
             break;
         } else {
             heap_swap(heap, index, smaller_child_index);
@@ -94,7 +95,7 @@ static void heap_heapify_down(struct heap *heap) {
 
 static void heap_heapify_up(struct heap *heap) {
     int index = heap->size - 1;
-    while (heap_has_parent(heap, index) && heap->items[index] < heap_parent(heap, index)) {
+    while (heap_has_parent(heap, index) && node_compare(&heap->nodes[index], heap_parent(heap, index)) < 0) {
         int parent_index = heap_index_of_parent(index);
         heap_swap(heap, index, parent_index);
         index = parent_index;
@@ -105,20 +106,21 @@ bool heap_is_empty(struct heap *heap) {
     return heap->size == 0;
 }
 
-int heap_pop(struct heap *heap) {
+
+struct node heap_pop(struct heap *heap) {
     assert(heap->size > 0);
 
-    int result = heap->items[0];
-    heap->items[0] = heap->items[heap->size - 1];
+    struct node result = heap->nodes[0];
+    heap->nodes[0] = heap->nodes[heap->size - 1];
     heap->size -= 1;
     heap_heapify_down(heap);
 
     return result;
 }
 
-void heap_push(struct heap *heap, int item) {
+void heap_push(struct heap* heap, struct node* node) {
     heap_ensure_capacity(heap);
-    heap->items[heap->size] = item;
+    heap->nodes[heap->size] = *node;
     heap->size += 1;
     heap_heapify_up(heap);
 }

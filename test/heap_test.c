@@ -24,38 +24,18 @@ FIXTURE_TEARDOWN(Heap_fixture) {
 #pragma TEST_START
 
 TEST(heap_create_works, Heap_fixture) {
-    ASSERT_NON_NULL(T_ heap.items);
+    ASSERT_NON_NULL(T_ heap.nodes);
     ASSERT_EQ(T_ heap.capacity, HEAP_INITIAL_CAPACITY, "%zu");
     ASSERT_EQ(T_ heap.size, 0, "%zu");
 }
 
 TEST(heap_destroy_deallocates, Heap_fixture) {
     heap_destroy(&T_ heap);
-    ASSERT_NULL(T_ heap.items);
+    ASSERT_NULL(T_ heap.nodes);
 }
 
 TEST(heap_is_empty, Heap_fixture) {
     ASSERT_EQ(heap_is_empty(&T_ heap), true, "%d");
-}
-
-TEST(heap_push_works, Heap_fixture) {
-    heap_push(&T_ heap, 2);
-    ASSERT_EQ(T_ heap.size, 1, "%d");
-    heap_push(&T_ heap, 3);
-    ASSERT_EQ(T_ heap.size, 2, "%d");
-}
-
-TEST(heap_pop_works, Heap_fixture) {
-    heap_push(&T_ heap, 1);
-    ASSERT_EQ(heap_pop(&T_ heap), 1, "%d");
-    heap_push(&T_ heap, 3);
-    heap_push(&T_ heap, 10);
-    heap_push(&T_ heap, 2);
-    heap_push(&T_ heap, 1);
-    ASSERT_EQ(heap_pop(&T_ heap), 1, "%d");
-    ASSERT_EQ(heap_pop(&T_ heap), 2, "%d");
-    ASSERT_EQ(heap_pop(&T_ heap), 3, "%d");
-    ASSERT_EQ(heap_pop(&T_ heap), 10, "%d");
 }
 
 #pragma TEST_END
