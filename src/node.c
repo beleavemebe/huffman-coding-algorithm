@@ -41,3 +41,7 @@ void node_destroy(struct node *node) {
         node->left = NULL;
     }
 }
+
+int node_compare(struct node *node, struct node *other) {
+    return node->freq - other->freq;
+}
