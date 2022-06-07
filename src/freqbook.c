@@ -2,6 +2,7 @@
 // Created by Roman on 06-Jun-22.
 //
 #include <stdlib.h>
+#include <string.h>
 #include "..\include\freqbook.h"
 #include "..\include\node.h"
 #include "..\include\heap.h"
@@ -37,4 +38,10 @@ struct heap freqbook_to_node_heap(struct freqbook *freqbook) {
     }
 
     return heap;
+}
+
+void freqbook_digest_string(struct freqbook *freqbook, char* string) {
+    for (int i = 0; i < strlen(string); ++i) {
+        freqbook_inc_freq(freqbook, string[i]);
+    }
 }

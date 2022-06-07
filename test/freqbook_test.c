@@ -79,5 +79,18 @@ TEST(freqbook_to_heap_works, Freqbook_fixture) {
     int a; // line for debug breakpoint
 }
 
+TEST(freqbbook_digest_string_works, Freqbook_fixture) {
+    char *string = "robin bobin barabek";
+    freqbook_digest_string(&T_ freqbook, string);
+    ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'r'), 2, "%d");
+    ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'o'), 2, "%d");
+    ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'b'), 5, "%d");
+    ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'i'), 2, "%d");
+    ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'n'), 2, "%d");
+    ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'a'), 2, "%d");
+    ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'e'), 1, "%d");
+    ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'k'), 1, "%d");
+}
+
 
 #pragma TEST_END
