@@ -40,8 +40,33 @@ struct heap freqbook_to_node_heap(struct freqbook *freqbook) {
     return heap;
 }
 
-void freqbook_digest_string(struct freqbook *freqbook, char* string) {
-    for (int i = 0; i < strlen(string); ++i) {
+void freqbook_digest_string(struct freqbook *freqbook, char *string, int string_length) {
+    for (int i = 0; i < string_length; ++i) {
         freqbook_inc_freq(freqbook, string[i]);
     }
+}
+
+struct freqbook_inflater freqbook_inflater_create(struct freqbook *freqbook, FILE *file) {
+    return (struct freqbook_inflater) {
+        .freqbook = freqbook,
+        .file = file,
+    };
+}
+
+void freqbook_inflater_destroy(struct freqbook_inflater *inflater) {
+    inflater->freqbook = NULL;
+    fclose(inflater->file);
+    inflater->file = NULL;
+}
+
+void freqbook_inflater_inflate(struct freqbook_inflater *inflater) {
+    char *buf = calloc(BUFFER_SIZE, sizeof(char));
+
+    while (true) {
+        int chars_read = (int) fread(buf, 1, BUFFER_SIZE, inflater->file);
+        if (chars_read == 0) break;
+        freqbook_digest_string(inflater->freqbook, buf, chars_read);
+    }
+
+    free(buf);
 }

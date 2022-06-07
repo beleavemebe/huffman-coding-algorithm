@@ -81,7 +81,7 @@ TEST(freqbook_to_heap_works, Freqbook_fixture) {
 
 TEST(freqbbook_digest_string_works, Freqbook_fixture) {
     char *string = "robin bobin barabek";
-    freqbook_digest_string(&T_ freqbook, string);
+    freqbook_digest_string(&T_ freqbook, string, 19);
     ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'r'), 2, "%d");
     ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'o'), 2, "%d");
     ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'b'), 5, "%d");
