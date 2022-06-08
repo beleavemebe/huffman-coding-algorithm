@@ -24,7 +24,7 @@ FIXTURE_TEARDOWN(Freqbook_fixture) {
 
 TEST(freqbook_create_works, Freqbook_fixture) {
     ASSERT_NON_NULL(T_ freqbook.frequencies);
-    for (int i = 0; i < 256; ++i) {
+    for (int i = 0; i < FREQBOOK_SIZE; ++i) {
         ASSERT_EQ(T_ freqbook.frequencies[i], 0, "%d");
     }
 }
@@ -79,7 +79,7 @@ TEST(freqbook_to_heap_works, Freqbook_fixture) {
     int a; // line for debug breakpoint
 }
 
-TEST(freqbbook_digest_string_works, Freqbook_fixture) {
+TEST(freqbook_digest_string_works, Freqbook_fixture) {
     char *string = "robin bobin barabek";
     freqbook_digest_string(&T_ freqbook, string, 19);
     ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'r'), 2, "%d");
