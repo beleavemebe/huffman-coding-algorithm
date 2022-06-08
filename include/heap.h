@@ -19,7 +19,7 @@ struct heap {
 struct heap heap_create();
 void heap_destroy(struct heap* heap);
 bool heap_is_empty(struct heap *heap);
-struct node heap_pop(struct heap *heap);
+struct node *heap_pop(struct heap *heap);
 void heap_push(struct heap* heap, struct node* node);
 
 #endif //HUFFMAN_HEAP_H

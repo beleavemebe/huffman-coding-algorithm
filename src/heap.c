@@ -107,7 +107,7 @@ bool heap_is_empty(struct heap *heap) {
 }
 
 
-struct node heap_pop(struct heap *heap) {
+struct node *heap_pop(struct heap *heap) {
     assert(heap->size > 0);
 
     struct node result = heap->nodes[0];
@@ -115,7 +115,7 @@ struct node heap_pop(struct heap *heap) {
     heap->size -= 1;
     heap_heapify_down(heap);
 
-    return result;
+    return node_create(result.freq, result.value, result.left, result.right);
 }
 
 void heap_push(struct heap* heap, struct node* node) {
