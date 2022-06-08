@@ -16,7 +16,7 @@ struct freqbook freqbook_create() {
 
 void freqbook_destroy(struct freqbook *freqbook) {
     free(freqbook->frequencies);
-    freqbook->frequencies = (int *) NULL;
+    freqbook->frequencies = NULL;
 }
 
 int freqbook_get_freq(struct freqbook *freqbook, char c) {
