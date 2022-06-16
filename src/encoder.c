@@ -23,23 +23,6 @@ void encoder_destroy(struct encoder *encoder) {
     encoder->output_file = NULL;
 }
 
-static int int_to_binary_string(char ch, char *buffer, int buf_size) {
-    int char_count =
-            ch == '\0' ?
-            8 // saying 00000000 has no leading zeros
-                       :
-            (int) log2((unsigned char) ch) + 1;
-
-    buffer += (buf_size - 1);
-
-    for (int i = 7; i >= 0; i--) {
-        *buffer-- = (ch & 1) + '0';
-        ch >>= 1;
-    }
-
-    return (int) char_count;
-}
-
 void encoder_encode(struct encoder *encoder) {
     char *input_buffer = calloc(WRITE_BUFFER_SIZE + 1, sizeof(char));
     input_buffer[WRITE_BUFFER_SIZE] = '\0'; // debug)
