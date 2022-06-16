@@ -55,15 +55,14 @@ struct freqbook_inflater freqbook_inflater_create(struct freqbook *freqbook, FIL
 
 void freqbook_inflater_destroy(struct freqbook_inflater *inflater) {
     inflater->freqbook = NULL;
-    fclose(inflater->file);
     inflater->file = NULL;
 }
 
 void freqbook_inflater_inflate(struct freqbook_inflater *inflater) {
-    char *buf = calloc(BUFFER_SIZE, sizeof(char));
+    char *buf = calloc(READ_BUFFER_SIZE, sizeof(char));
 
     while (true) {
-        int chars_read = (int) fread(buf, 1, BUFFER_SIZE, inflater->file);
+        int chars_read = (int) fread(buf, 1, READ_BUFFER_SIZE, inflater->file);
         if (chars_read == 0) break;
         freqbook_digest_string(inflater->freqbook, buf, chars_read);
     }

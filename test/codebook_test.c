@@ -34,15 +34,15 @@ TEST(codebook_destroy_deallocates, Codebook_fixture) {
 }
 
 TEST(codebook_set_code_works, Codebook_fixture) {
-    char code = 0x0010;
+    char *code = "01010";
     codebook_set_code(&T_ codebook, 'A', code);
-    ASSERT_EQ(T_ codebook.codes[(unsigned char) 'A'], code, "%2d");
+    ASSERT_EQ(T_ codebook.codes[(unsigned char) 'A'], code, "%s");
 }
 
 TEST(codebook_get_code_works, Codebook_fixture) {
-    char code = 0x0010;
+    char *code = "01010";
     codebook_set_code(&T_ codebook, 'A', code);
-    ASSERT_EQ(codebook_get_code(&T_ codebook, 'A'), code, "%d");
+    ASSERT_EQ(codebook_get_code(&T_ codebook, 'A'), code, "%s");
 }
 
 #pragma TEST_END
