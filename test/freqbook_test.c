@@ -92,5 +92,11 @@ TEST(freqbook_digest_string_works, Freqbook_fixture) {
     ASSERT_EQ(freqbook_get_freq(&T_ freqbook, 'k'), 1, "%d");
 }
 
+TEST(freqbook_get_amount_of_frequencies_works, Freqbook_fixture) {
+    char *string = "robin bobin barabek";
+    freqbook_digest_string(&T_ freqbook, string, 19);
+    ASSERT_EQ(freqbook_get_amount_of_frequencies(&T_ freqbook), 9, "%d");
+}
+
 
 #pragma TEST_END

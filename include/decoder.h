@@ -8,12 +8,11 @@
 #include <stdio.h>
 
 struct decoder {
-    struct node *tree_root;
     FILE *src_file;
     FILE *output_file;
 };
 
-struct decoder decoder_create(struct node *tree_root, FILE *src_file, FILE *output_file);
+struct decoder decoder_create(FILE *src_file, FILE *output_file);
 void decoder_destroy(struct decoder *decoder);
 void decoder_decode(struct decoder *decoder);
 

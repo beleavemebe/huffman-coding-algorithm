@@ -4,14 +4,18 @@
 
 #include <malloc.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <assert.h>
 #include "../include/encoder.h"
 #include "../include/codebook.h"
 #include "../include/buffers.h"
+#include "../include/freqbook.h"
 
-struct encoder encoder_create(struct codebook *codebook, FILE *src_file, FILE *output_file_name) {
+struct encoder encoder_create(struct freqbook *freqbook, struct codebook *codebook, FILE *src_file, FILE *output_file_name) {
     return (struct encoder) {
+        .freqbook = freqbook,
         .codebook = codebook,
         .src_file = src_file,
         .output_file = output_file_name
@@ -19,12 +23,38 @@ struct encoder encoder_create(struct codebook *codebook, FILE *src_file, FILE *o
 }
 
 void encoder_destroy(struct encoder *encoder) {
+    encoder->freqbook = NULL;
     encoder->codebook = NULL;
     encoder->src_file = NULL;
     encoder->output_file = NULL;
 }
 
-void encoder_encode(struct encoder *encoder) {
+static void serialize_code_count(struct encoder *encoder, int code_count) {
+    fwrite(&code_count, sizeof(int), 1, encoder->output_file);
+}
+
+static void serialize_amount_of_frequencies(struct encoder *encoder) {
+    int amount_of_frequencies = freqbook_get_amount_of_frequencies(encoder->freqbook);
+    fwrite(&amount_of_frequencies, sizeof(int), 1, encoder->output_file);
+}
+
+void serialize_freqbook(struct encoder *encoder) {
+    for (int i = 0; i < FREQBOOK_SIZE; ++i) {
+        int freq = freqbook_get_freq(encoder->freqbook, (char) i);
+        if (freq != 0) {
+            fwrite(&i, sizeof(char), 1, encoder->output_file);
+            fwrite(&freq, sizeof(int), 1, encoder->output_file);
+        }
+    }
+}
+
+void encoder_encode(struct encoder *encoder, char* output_filename) {
+    int code_count = 0;
+    serialize_code_count(encoder, code_count);
+
+    serialize_amount_of_frequencies(encoder);
+    serialize_freqbook(encoder);
+
     char *input_buffer = calloc(WRITE_BUFFER_SIZE + 1, sizeof(char));
     input_buffer[WRITE_BUFFER_SIZE] = '\0'; // debug)
 
@@ -48,12 +78,11 @@ void encoder_encode(struct encoder *encoder) {
             size_t len = strlen(encoded);
             output_bits_buf_ptr += len;
             bits_written += (int) len;
+            code_count++;
         }
 
         int bytes_to_write = bits_written / 8 + (bits_written % 8 == 0 ? 0 : 1);
         char *output_byte_buffer = calloc(bytes_to_write, sizeof(char));
-
-        int last_byte_extra_shift;
 
         for (int i = 0; i < bits_written; i += 8) {
             int byte_end = (int) fmin(i + 8, bits_written + 1);
@@ -62,7 +91,7 @@ void encoder_encode(struct encoder *encoder) {
             char encoded_byte = (char) strtol(output_bits_buffer + i, 0, 2);
 
             if (i + 8 > bits_written) {
-                last_byte_extra_shift = 8 - (i + 8 - bits_written);
+                int last_byte_extra_shift = 8 - (i + 8 - bits_written);
                 encoded_byte <<= last_byte_extra_shift;
             }
 
@@ -76,5 +105,14 @@ void encoder_encode(struct encoder *encoder) {
         free(output_byte_buffer);
     }
 
+    // FUCK THIS CODE!!!!!!!
+    fclose(encoder->output_file);
+    freopen(output_filename, "rb+", encoder->output_file);
+
+    // Overwrite 1st byte
+    serialize_code_count(encoder, code_count);
+
     free(input_buffer);
 }
+
+// sorry for govnocode and comments. had no sleep for 25 hrs by now

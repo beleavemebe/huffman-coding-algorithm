@@ -16,9 +16,11 @@ struct freqbook {
 struct freqbook freqbook_create();
 void freqbook_destroy(struct freqbook *freqbook);
 int freqbook_get_freq(struct freqbook *freqbook, char c);
+void freqbook_set_freq(struct freqbook *freqbook, char c, int freq);
 void freqbook_inc_freq(struct freqbook *freqbook, char c);
 struct heap freqbook_to_node_heap(struct freqbook *freqbook);
 void freqbook_digest_string(struct freqbook *freqbook, char *string, int string_length);
+int freqbook_get_amount_of_frequencies(struct freqbook *freqbook);
 
 struct freqbook_inflater {
     struct freqbook *freqbook;

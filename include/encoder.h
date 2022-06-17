@@ -8,13 +8,14 @@
 #include <stdio.h>
 
 struct encoder {
+    struct freqbook *freqbook;
     struct codebook *codebook;
     FILE *src_file;
     FILE *output_file;
 };
 
-struct encoder encoder_create(struct codebook *codebook, FILE *src_file, FILE *output_file_name);
+struct encoder encoder_create(struct freqbook *freqbook, struct codebook *codebook, FILE *src_file, FILE *output_file_name);
 void encoder_destroy(struct encoder *encoder);
-void encoder_encode(struct encoder *encoder);
+void encoder_encode(struct encoder *encoder, char* output_filename);
 
 #endif //HUFFMAN_ENCODER_H

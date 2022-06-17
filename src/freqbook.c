@@ -24,6 +24,10 @@ int freqbook_get_freq(struct freqbook *freqbook, char c) {
     return freqbook->frequencies[(unsigned char) c];
 }
 
+void freqbook_set_freq(struct freqbook *freqbook, char c, int freq) {
+    freqbook->frequencies[(unsigned char) c] = freq;
+}
+
 void freqbook_inc_freq(struct freqbook *freqbook, char c) {
     freqbook->frequencies[(unsigned char) c] += 1;
 }
@@ -69,4 +73,14 @@ void freqbook_inflater_inflate(struct freqbook_inflater *inflater) {
     }
 
     free(buf);
+}
+
+int freqbook_get_amount_of_frequencies(struct freqbook *freqbook) {
+    int result = 0;
+    for (int i = 0; i < FREQBOOK_SIZE; ++i) {
+        if (freqbook_get_freq(freqbook, (char) i) != 0) {
+            result++;
+        }
+    }
+    return result;
 }
