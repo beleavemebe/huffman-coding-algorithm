@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <string.h>
 #include "../include/freqbook.h"
 #include "../include/node.h"
 #include "../include/heap.h"
 #include "../include/codebook.h"
 #include "../include/encoder.h"
+#include "../include/decoder.h."
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -50,12 +52,20 @@ int main(int argc, char **argv) {
     struct encoder encoder = encoder_create(&codebook, file, output_file);
     encoder_encode(&encoder);
 
+    fclose(output_file);
+    output_file = fopen(argv[2], "rb");
+
+    FILE *decoded_file = fopen(strcat(argv[2], "Decoded.txt"), "ab");
+    struct decoder decoder = decoder_create(&root, output_file, decoded_file);
+    decoder_decode(&decoder);
+
     heap_destroy(&heap);
     freqbook_destroy(&freqbook);
     freqbook_inflater_destroy(&inflater);
     codebook_destroy(&codebook);
     codebook_inflater_destroy(&cb_inflater);
     encoder_destroy(&encoder);
+    decoder_destroy(&decoder);
 
     fclose(file);
 

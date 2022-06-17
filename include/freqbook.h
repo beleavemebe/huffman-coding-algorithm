@@ -20,8 +20,6 @@ void freqbook_inc_freq(struct freqbook *freqbook, char c);
 struct heap freqbook_to_node_heap(struct freqbook *freqbook);
 void freqbook_digest_string(struct freqbook *freqbook, char *string, int string_length);
 
-#define READ_BUFFER_SIZE 4096
-
 struct freqbook_inflater {
     struct freqbook *freqbook;
     FILE *file;

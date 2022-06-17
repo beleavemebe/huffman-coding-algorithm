@@ -7,8 +7,6 @@
 
 #include <stdio.h>
 
-#define WRITE_BUFFER_SIZE 4096
-
 struct encoder {
     struct codebook *codebook;
     FILE *src_file;

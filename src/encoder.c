@@ -8,6 +8,7 @@
 #include <string.h>
 #include "../include/encoder.h"
 #include "../include/codebook.h"
+#include "../include/buffers.h"
 
 struct encoder encoder_create(struct codebook *codebook, FILE *src_file, FILE *output_file_name) {
     return (struct encoder) {
@@ -52,14 +53,22 @@ void encoder_encode(struct encoder *encoder) {
         int bytes_to_write = bits_written / 8 + (bits_written % 8 == 0 ? 0 : 1);
         char *output_byte_buffer = calloc(bytes_to_write, sizeof(char));
 
+        int last_byte_extra_shift;
+
         for (int i = 0; i < bits_written; i += 8) {
             int byte_end = (int) fmin(i + 8, bits_written + 1);
             char temp = output_bits_buffer[byte_end];
             output_bits_buffer[byte_end] = '\0';
             char encoded_byte = (char) strtol(output_bits_buffer + i, 0, 2);
+
+            if (i + 8 > bits_written) {
+                last_byte_extra_shift = 8 - (i + 8 - bits_written);
+                encoded_byte <<= last_byte_extra_shift;
+            }
+
             output_bits_buffer[byte_end] = temp;
 
-            sprintf(output_byte_buffer, "%c", encoded_byte);
+            output_byte_buffer[i / 8] = encoded_byte;
         }
 
         fwrite(output_byte_buffer, sizeof(char), bytes_to_write, encoder->output_file);

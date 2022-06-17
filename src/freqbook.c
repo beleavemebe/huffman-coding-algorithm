@@ -1,11 +1,12 @@
 //
 // Created by Roman on 06-Jun-22.
 //
+
 #include <stdlib.h>
-#include <string.h>
 #include "..\include\freqbook.h"
 #include "..\include\node.h"
 #include "..\include\heap.h"
+#include "..\include\buffers.h"
 
 
 struct freqbook freqbook_create() {

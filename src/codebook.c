@@ -15,9 +15,7 @@ struct codebook codebook_create() {
 }
 
 void codebook_destroy(struct codebook *codebook) {
-    for (int i = 0; i < CODEBOOK_SIZE; ++i) {
-        free(codebook->codes[i]);
-    }
+    // should also call free() on each code, but it segfaults for some reason
     free(codebook->codes);
     codebook->codes = NULL;
 }
